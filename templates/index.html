@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="text-center mb-5">
+    <h1 class="display-5 fw-bold text-success">Book Your Football Turf</h1>
+    <p class="lead text-muted">Find and book the best 5-a-side pitches in Dublin</p>
+</div>
+<div class="row">
+{% for turf in turfs %}
+<div class="col-md-4 mb-4">
+    <div class="card shadow-sm h-100">
+        <div class="card-body">
+            <h5 class="card-title fw-bold">{{ turf.name }}</h5>
+            <p class="text-muted">📍 {{ turf.location }}</p>
+            <p class="fw-bold text-success fs-5">€{{ turf.price_per_hour }}/hr</p>
+            <a href="/book/{{ turf.id }}" class="btn btn-success w-100">Book Now</a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% endblock %}

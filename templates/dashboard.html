@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3 class="mb-4">My Bookings</h3>
+{% if bookings %}
+<table class="table table-bordered table-hover">
+    <thead class="table-success">
+        <tr>
+            <th>Turf</th><th>Location</th><th>Date</th>
+            <th>Start</th><th>End</th><th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for b in bookings %}
+    <tr>
+        <td>{{ b.name }}</td>
+        <td>{{ b.location }}</td>
+        <td>{{ b.date }}</td>
+        <td>{{ b.start_time }}</td>
+        <td>{{ b.end_time }}</td>
+        <td><a href="/cancel/{{ b.id }}" class="btn btn-danger btn-sm"
+               onclick="return confirm('Cancel this booking?')">Cancel</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="alert alert-info">No bookings yet. <a href="/">Browse turfs</a></div>
+{% endif %}
+{% endblock %}

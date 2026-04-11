@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-md-5">
+    <div class="card shadow p-4">
+        <h3>Book: {{ turf.name }}</h3>
+        <p class="text-muted">📍 {{ turf.location }} — <strong class="text-success">€{{ turf.price_per_hour }}/hr</strong></p>
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Date</label>
+                <input type="date" name="date" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Start Time</label>
+                <input type="time" name="start_time" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">End Time</label>
+                <input type="time" name="end_time" class="form-control" required>
+            </div>
+            <button class="btn btn-success w-100">Confirm Booking</button>
+            <a href="/" class="btn btn-outline-secondary w-100 mt-2">Cancel</a>
+        </form>
+    </div>
+</div>
+</div>
+{% endblock %}
