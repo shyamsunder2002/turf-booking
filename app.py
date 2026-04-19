@@ -1,7 +1,10 @@
 from flask import Flask, render_template, request, redirect, session, flash
+from flask_bcrypt import Bcrypt
 from database import get_db, init_db
+import os
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 app.secret_key = 'supersecretkey123'
 
 @app.route('/')
@@ -35,10 +38,9 @@ def login():
         password = request.form['password']
         db = get_db()
         # INTENTIONALLY VULNERABLE - SQL Injection possible here
-        query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
-        user = db.execute(query).fetchone()
+        user = db.execute("SELECT * FROM users WHERE username=?", (username,)).fetchone()
         db.close()
-        if user:
+        if user and user['password'] == password:
             session['user_id'] = user['id']
             session['username'] = user['username']
             session['role'] = user['role']
