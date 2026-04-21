@@ -5,7 +5,10 @@ import os
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
-app.secret_key = 'supersecretkey123'
+app.secret_key = os.urandom(24)
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['PERMANENT_SESSION_LIFETIME'] = 1800
 
 @app.route('/')
 def index():
