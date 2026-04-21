@@ -40,7 +40,7 @@ def init_db():
     cursor.execute("SELECT * FROM users WHERE username='admin'")
     if not cursor.fetchone():
         cursor.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
-               ('admin', '$2b$12$ZwBJ2eG5S/VsSR0SfQxE1.K/NyeVYLscKFH.l8RqGi9A.UK9W8LbS', 'admin'))
+               ('admin', 'admin123', 'admin'))
 
     cursor.execute("SELECT COUNT(*) FROM turfs")
     if cursor.fetchone()[0] == 0:

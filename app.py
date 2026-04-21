@@ -1,14 +1,8 @@
 from flask import Flask, render_template, request, redirect, session, flash
-from flask_bcrypt import Bcrypt
 from database import get_db, init_db
-import os
 
 app = Flask(__name__)
-bcrypt = Bcrypt(app)
-app.secret_key = os.urandom(24)
-app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-app.config['PERMANENT_SESSION_LIFETIME'] = 1800
+app.secret_key = 'supersecretkey123'
 
 @app.route('/')
 def index():
@@ -20,16 +14,11 @@ def index():
 @app.route('/register', methods=['GET','POST'])
 def register():
     if request.method == 'POST':
-        username = request.form['username'].strip()
+        username = request.form['username']
         password = request.form['password']
-        if len(password) < 6:
-            flash('Password must be at least 6 characters.', 'danger')
-            return render_template('register.html')
-        # SECURITY FIX 2: Hash password with bcrypt before storing
-        hashed = bcrypt.generate_password_hash(password).decode('utf-8')
         db = get_db()
         try:
-            db.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, hashed))
+            db.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
             db.commit()
             flash('Registered! Please login.', 'success')
             return redirect('/login')
@@ -42,14 +31,14 @@ def register():
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username'].strip()
+        username = request.form['username']
         password = request.form['password']
         db = get_db()
-        # SECURITY FIX 1: Parameterized query prevents SQL injection
-        user = db.execute("SELECT * FROM users WHERE username=?", (username,)).fetchone()
+        # INTENTIONALLY VULNERABLE - SQL Injection possible here
+        query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
+        user = db.execute(query).fetchone()
         db.close()
-        # SECURITY FIX 2: bcrypt check instead of plaintext comparison
-        if user and bcrypt.check_password_hash(user['password'], password):
+        if user:
             session['user_id'] = user['id']
             session['username'] = user['username']
             session['role'] = user['role']
