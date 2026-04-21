@@ -17,11 +17,16 @@ def index():
 @app.route('/register', methods=['GET','POST'])
 def register():
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username'].strip()
         password = request.form['password']
+        if len(password) < 6:
+            flash('Password must be at least 6 characters.', 'danger')
+            return render_template('register.html')
+        # SECURITY FIX 2: Hash password with bcrypt before storing
+        hashed = bcrypt.generate_password_hash(password).decode('utf-8')
         db = get_db()
         try:
-            db.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+            db.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, hashed))
             db.commit()
             flash('Registered! Please login.', 'success')
             return redirect('/login')
@@ -40,7 +45,8 @@ def login():
         # SECURITY FIX 1: Parameterized query prevents SQL injection
         user = db.execute("SELECT * FROM users WHERE username=?", (username,)).fetchone()
         db.close()
-        if user and user['password'] == password:
+        # SECURITY FIX 2: bcrypt check instead of plaintext comparison
+        if user and bcrypt.check_password_hash(user['password'], password):
             session['user_id'] = user['id']
             session['username'] = user['username']
             session['role'] = user['role']
