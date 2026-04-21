@@ -34,10 +34,10 @@ def register():
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username'].strip()
         password = request.form['password']
         db = get_db()
-        # INTENTIONALLY VULNERABLE - SQL Injection possible here
+        # SECURITY FIX 1: Parameterized query prevents SQL injection
         user = db.execute("SELECT * FROM users WHERE username=?", (username,)).fetchone()
         db.close()
         if user and user['password'] == password:
