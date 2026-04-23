@@ -85,6 +85,10 @@ def book(turf_id):
         date = request.form['date']
         start = request.form['start_time']
         end = request.form['end_time']
+        # Validate that end time is after start time
+        if end <= start:
+            flash('End time must be after start time.', 'danger')
+            return render_template('book.html', turf=turf)
         db.execute("INSERT INTO bookings (user_id, turf_id, date, start_time, end_time) VALUES (?,?,?,?,?)",
                    (session['user_id'], turf_id, date, start, end))
         db.commit()
