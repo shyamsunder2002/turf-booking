@@ -71,3 +71,17 @@ vulnerabilities and progressively implementing security fixes.
 - Flask-Bcrypt: https://flask-bcrypt.readthedocs.io
 - OWASP Top 10: https://owasp.org/www-project-top-ten
 - Bootstrap 5: https://getbootstrap.com
+
+## Running Security Tests
+
+To run Bandit SAST scan on the project:
+pip install bandit
+bandit -r app.py database.py
+
+To test SQL injection manually:
+1. Switch to the vulnerable branch: git checkout vulnerable
+2. Run the app: python app.py
+3. Go to login page and enter: ' OR '1'='1 as username
+4. Observe authentication bypass
+5. Switch back to main: git checkout main
+6. Repeat - observe it is blocked
