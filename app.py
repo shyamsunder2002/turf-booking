@@ -22,6 +22,9 @@ def register():
     if request.method == 'POST':
         username = request.form['username'].strip()
         password = request.form['password']
+        if len(username) < 3 or len(username) > 20:
+            flash('Username must be between 3 and 20 characters.', 'danger')
+            return render_template('register.html')
         if len(password) < 6:
             flash('Password must be at least 6 characters.', 'danger')
             return render_template('register.html')
