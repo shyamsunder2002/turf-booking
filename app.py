@@ -150,6 +150,18 @@ def delete_turf(turf_id):
     db.close()
     return redirect('/admin')
 
+@app.route('/admin/edit-turf/<int:turf_id>', methods=['POST'])
+def edit_turf(turf_id):
+    if session.get('role') != 'admin':
+        return redirect('/')
+    price = request.form['price']
+    db = get_db()
+    db.execute("UPDATE turfs SET price_per_hour=? WHERE id=?", (price, turf_id))
+    db.commit()
+    db.close()
+    flash('Turf price updated.', 'success')
+    return redirect('/admin')
+
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
